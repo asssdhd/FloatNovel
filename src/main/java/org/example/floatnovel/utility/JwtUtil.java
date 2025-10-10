@@ -36,7 +36,7 @@ public class JwtUtil {
                 .setSubject(username)//需要指定用户名
                 .claim("roles",roles)//需要写入用户角色
                 .setIssuedAt(new Date(now))  //设置签发时间
-                .setExpiration(new Date(expiration))//设置过期时间
+                .setExpiration(new Date(now+expiration))//设置过期时间
                 .compact();
     }
 
@@ -46,9 +46,9 @@ public class JwtUtil {
     public Claims parseToken(String token) {
 
         return Jwts.parserBuilder()
-                .setSigningKey(secret)//指定密钥
+                .setSigningKey(getSigningKey()) // 必须用 SecretKey
                 .build()//创建jwtParser解析器对象
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();//取出 Payload 部分
 
     }

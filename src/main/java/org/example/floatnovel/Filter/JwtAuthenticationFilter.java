@@ -40,8 +40,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
 
-
-
         String header = request.getHeader("Authorization");
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
             String token = header.substring(7);
@@ -52,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .collect(Collectors.toList());
 
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(username, null, authorities);//TODO需要三个参数代表已认证
+                        new UsernamePasswordAuthenticationToken(username, null, authorities);//需要三个参数代表已认证
 
                 // 将认证信息放入 SecurityContext，后续可以通过 SecurityContextHolder.getContext() 获取
                 SecurityContextHolder.getContext().setAuthentication(authentication);
