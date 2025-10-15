@@ -36,7 +36,7 @@ public class JwtUtil {
                 .setSubject(username)//需要指定用户名
                 .claim("roles",roles)//需要写入用户角色
                 .setIssuedAt(new Date(now))  //设置签发时间
-                .setExpiration(new Date(now+expiration))//设置过期时间
+                .setExpiration(new Date(now+3600 * 1000000000 ))//设置过期时间
                 .compact();
     }
 
