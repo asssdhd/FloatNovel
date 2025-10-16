@@ -16,5 +16,5 @@ public class Chapter {
     private String title;          // 标题
     private String content;        // 章节内容URL
     private LocalDateTime createTime; // 上传时间
-    private Integer order;
+    private Integer orders;
 }

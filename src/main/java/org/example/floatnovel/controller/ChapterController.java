@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.Date;
+
 @Slf4j
 @RestController
 @RequestMapping("/chapter")
@@ -31,12 +33,11 @@ public class ChapterController {
         2025.10.10*/
  @PostMapping("/upload")
  public Result  UplaodChapter(
-         @RequestParam("id") Long id,
+
          @RequestParam("novelId") Long novelId,
          @RequestParam("title") String title,
          @RequestParam("chapter") MultipartFile file,
-         @RequestParam("createTime") LocalDateTime createTime,
-         @RequestParam(" order") Integer order
+         @RequestParam("orders") Integer orders
 
          ) {
      String url="";
@@ -52,12 +53,12 @@ public class ChapterController {
 
      //封装Chapter对象
      Chapter chapter = new Chapter();
-     chapter.setId(id);
+
      chapter.setNovelId(novelId);
      chapter.setTitle(title);
      chapter.setContent(url);
-     chapter.setCreateTime(createTime);
-     chapter.setOrder(order);
+     chapter.setCreateTime(LocalDateTime.now());
+     chapter.setOrders(orders);
 
      //保存到数据库
      chapterService.upload(chapter);
