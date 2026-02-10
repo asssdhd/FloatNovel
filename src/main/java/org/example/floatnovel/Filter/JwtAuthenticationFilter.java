@@ -3,6 +3,7 @@ package org.example.floatnovel.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.floatnovel.common.LoginUser;
 import org.example.floatnovel.utility.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,6 +34,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
        //后加的
         String path = request.getRequestURI();
 
+        System.out.println(">>> JwtAuthenticationFilter triggered for: " + request.getRequestURI());
+        System.out.println("Authorization header: " + request.getHeader("Authorization"));
+
+
         System.out.println(path);
         if (path.startsWith("/user/login") || path.startsWith("/user/signUp")) {
             filterChain.doFilter(request, response);
@@ -44,13 +49,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             if (jwtUtil.isTokenValid(token)) {
+                Long userId = jwtUtil.getUserId(token);
                 String username = jwtUtil.getUsername(token);
+                LoginUser loginUser = new LoginUser(userId, username);
+
                 List<SimpleGrantedAuthority> authorities = jwtUtil.getRoles(token).stream()
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(username, null, authorities);//需要三个参数代表已认证
+                        new UsernamePasswordAuthenticationToken(loginUser, null, authorities);//需要三个参数代表已认证
 
                 // 将认证信息放入 SecurityContext，后续可以通过 SecurityContextHolder.getContext() 获取
                 SecurityContextHolder.getContext().setAuthentication(authentication);

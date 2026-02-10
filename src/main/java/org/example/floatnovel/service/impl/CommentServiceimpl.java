@@ -3,14 +3,11 @@ package org.example.floatnovel.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.ibatis.annotations.Mapper;
 import org.example.floatnovel.entity.Comment;
-import org.example.floatnovel.entity.Novel;
 import org.example.floatnovel.entity.Result;
-import org.example.floatnovel.mappper.CommentMapper;
+import org.example.floatnovel.mapper.CommentMapper;
 import org.example.floatnovel.service.CommentService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDateTime;
 

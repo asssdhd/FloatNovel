@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.example.floatnovel.entity.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -27,13 +28,14 @@ public class JwtUtil {
     }
 
     //生成token令牌
-    public  String generateToken(String username, Collection<String> roles) {
+    public  String generateToken(String username,List<String> roles,Long userId) {
 
         //获取现在的时间
         long now = System.currentTimeMillis();
-       return Jwts.builder()
+        return Jwts.builder()
                 .signWith(getSigningKey(),SignatureAlgorithm.HS256)//需要指定签名算法和密钥
                 .setSubject(username)//需要指定用户名
+                .claim("userId",userId)
                 .claim("roles",roles)//需要写入用户角色
                 .setIssuedAt(new Date(now))  //设置签发时间
                 .setExpiration(new Date(now+3600 * 1000000000 ))//设置过期时间
@@ -77,6 +79,16 @@ public class JwtUtil {
         }
         return Collections.emptyList();
     }
+
+    //获取用户ID
+    public Long getUserId(String token) {
+       Claims claims = parseToken(token);
+
+       Number userId=claims.get("userId", Number.class);
+
+        return userId.longValue();
+    }
+
 
 
 }

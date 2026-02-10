@@ -14,7 +14,7 @@ public class Chapter {
     private Long id;               // 章节ID
     private Long novelId;          // 小说ID
     private String title;          // 标题
-    private String content;        // 章节内容URL
-    private LocalDateTime createTime; // 上传时间
-    private Integer orders;
+    private LocalDateTime createTime; // 创建时间
+    private Integer orders;   //章节排序
+
 }

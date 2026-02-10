@@ -3,11 +3,10 @@ package org.example.floatnovel.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.example.floatnovel.entity.Rating;
 import org.example.floatnovel.entity.Result;
-import org.example.floatnovel.mappper.RatingMapper;
+import org.example.floatnovel.mapper.RatingMapper;
 import org.example.floatnovel.service.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 
