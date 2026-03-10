@@ -6,10 +6,10 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.example.floatnovel.annotation.Log;
-import org.example.floatnovel.entity.OperationLogEntity;
+import org.example.floatnovel.entity.OperationLog;
 import org.example.floatnovel.service.OperationLogService;
-import org.example.floatnovel.utility.GetUser;
 import org.example.floatnovel.utility.GetUserIp;
+import org.example.floatnovel.utility.SaTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -67,7 +67,7 @@ public class Gaspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
 
-        OperationLogEntity logEntity = new OperationLogEntity();
+        OperationLog logEntity = new OperationLog();
         logEntity.setModule(log.module());
         logEntity.setOperation(log.operation());
         logEntity.setDescription(log.description());
@@ -82,7 +82,7 @@ public class Gaspect {
         logEntity.setRequestParams(params);
 
         // 当前用户名（从 ThreadLocal / SecurityContext 取）
-        logEntity.setOperator(GetUser.getUserName());
+        logEntity.setOperator(String.valueOf(SaTokenUtil.getUserId()));
 
         logEntity.setIp(getUserIp.getClientIp());
         logEntity.setOperateTime(LocalDateTime.now());

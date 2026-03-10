@@ -1,5 +1,6 @@
 package org.example.floatnovel.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -13,7 +14,7 @@ import org.example.floatnovel.service.BookshelfService;
 import org.example.floatnovel.utility.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,9 +37,9 @@ public class BookshelfServiceimpl extends ServiceImpl<BookshelfMapper, Bookshelf
 
         //1.清理redis中的缓存防止脏读
           //1.1获取用户ID
-          LoginUser loginUser=(LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = StpUtil.getLoginIdAsLong();
           //1.2设置key
-         String key= RedisConstant.BOOKSHELF_KEY+loginUser.getId();
+         String key= RedisConstant.BOOKSHELF_KEY+userId;
          //1.3删除缓存
          stringRedisTemplate.delete(key);
        //删除数据库中的数据
@@ -55,10 +56,10 @@ public class BookshelfServiceimpl extends ServiceImpl<BookshelfMapper, Bookshelf
     public List<BookshelfVO> getAll() {
 
        //获取用户id
-        LoginUser LoginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = StpUtil.getLoginIdAsLong();
         //查询Redis中缓存的信息，若不存在则查询写入redis
           //设置key
-        String key= RedisConstant.BOOKSHELF_KEY+LoginUser.getId();
+        String key= RedisConstant.BOOKSHELF_KEY+userId;
 
         String json = stringRedisTemplate.opsForValue().get(key);
 
@@ -73,7 +74,7 @@ public class BookshelfServiceimpl extends ServiceImpl<BookshelfMapper, Bookshelf
         }
 
         //查询到书架数据
-        List<BookshelfVO> list= bookshelfMapper.getAll(LoginUser.getId());
+        List<BookshelfVO> list= bookshelfMapper.getAll(userId);
 
         //将查询到的数据进行序列化
         String JsonList = JsonUtil.toJson(list);

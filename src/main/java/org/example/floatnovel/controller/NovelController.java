@@ -54,9 +54,14 @@ public class NovelController {
     @GetMapping("/list")
     @Operation(summary = "小说列表接口")
     public Result<Page<Novel>> NovelPage(@RequestParam int pageNum,
-                                  @RequestParam int pageSize){
+                                         @RequestParam int pageSize,
+                                         @RequestParam(required = false) String name,
+                                         @RequestParam(required = false) String author,
+                                         @RequestParam(required = false) Long categoryId
 
-        Page<Novel> page = novelService.NovelPage(pageNum, pageSize);
+    ){
+
+        Page<Novel> page = novelService.NovelPage(pageNum, pageSize, name, author, categoryId);
 
         return Result.success(page);
 
@@ -108,6 +113,8 @@ public class NovelController {
     阅读小说
     2025.12.30
      */
+    @GetMapping("/read")
+    @Operation(summary = "阅读小说接口")
     public Result<ChapterDTO> read(@RequestParam Long chapterId){
 
         return chapterService.read(chapterId);

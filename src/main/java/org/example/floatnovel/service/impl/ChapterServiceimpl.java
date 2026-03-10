@@ -72,6 +72,9 @@ public class ChapterServiceimpl extends ServiceImpl<ChapterMapper, Chapter> impl
         return Result.success(catalogue);
     }
 
+    /*
+    * 阅读小说
+    * */
     @Override
     public Result<ChapterDTO> read(Long chapterId) {
 

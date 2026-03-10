@@ -1,5 +1,6 @@
 package org.example.floatnovel.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,8 +12,9 @@ import org.example.floatnovel.mapper.BookshelfMapper;
 import org.example.floatnovel.mapper.NovelMapper;
 import org.example.floatnovel.service.NovelService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 
@@ -38,10 +40,27 @@ public class NovelServiceimpl extends ServiceImpl<NovelMapper, Novel> implements
     }
 
     @Override
-    public Page<Novel> NovelPage(int pageNum, int pageSize) {
+    public Page<Novel> NovelPage(int pageNum, int pageSize, String name, String author, Long categoryId) {
+
         Page<Novel> page = new Page<>(pageNum, pageSize);
+
         LambdaQueryWrapper<Novel> wrapper = new LambdaQueryWrapper<>();
-        wrapper.orderByDesc(Novel::getCreateTime);
+
+        // 动态拼接条件
+        if (StringUtils.hasText(name)) {
+            wrapper.like(Novel::getName, name);
+        }
+
+        if (StringUtils.hasText(author)) {
+            wrapper.like(Novel::getAuthor, author);
+        }
+
+        if (categoryId != null) {
+            wrapper.eq(Novel::getCategory, categoryId);
+        }
+
+        wrapper.orderByDesc(Novel::getId);
+
         return this.page(page, wrapper);
     }
 
@@ -66,12 +85,10 @@ public class NovelServiceimpl extends ServiceImpl<NovelMapper, Novel> implements
     public void collect(Long novelId) {
         //1.获取用户的ID
          //1.1从security中获取loginUser对象
-         LoginUser loginUser = (LoginUser)SecurityContextHolder.getContext()
-               .getAuthentication()
-               .getPrincipal();
+        Long userId = StpUtil.getLoginIdAsLong();
 
-         //1.2取出用户ID
-        Long userId = loginUser.getId();
+
+
 
         //查询小说名和封面
         Novel novel = novelMapper.selectById(novelId);

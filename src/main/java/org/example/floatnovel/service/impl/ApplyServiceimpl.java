@@ -1,5 +1,6 @@
 package org.example.floatnovel.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -11,7 +12,7 @@ import org.example.floatnovel.entity.Result;
 import org.example.floatnovel.mapper.ApplyMapper;
 import org.example.floatnovel.service.ApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -29,8 +30,8 @@ public class ApplyServiceimpl extends ServiceImpl<ApplyMapper, Apply> implements
 
 
         //填充字段
-        LoginUser loginuser =(LoginUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        apply.setUserId(loginuser.getId());
+        Long userId = StpUtil.getLoginIdAsLong();
+        apply.setUserId(userId);
         apply.setStatus(ApplyStatus.PENDING.getCode());
         apply.setCreateTime(LocalDateTime.now());
 
