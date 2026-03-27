@@ -14,6 +14,7 @@ import java.util.List;
 public interface ChapterMapper extends BaseMapper<Chapter> {
     @Select("select id AS chapterId,title,orders from chapter where novel_id=#{novelId} order by orders ")
     List<CatalogueDTO> Catalogue(Long novelId);
+
     @Select("SELECT c.id AS chapterId, c.title, cc.content\n" +
             "FROM chapter c\n" +
             "JOIN chapter_content cc ON c.id = cc.chapter_id\n" +

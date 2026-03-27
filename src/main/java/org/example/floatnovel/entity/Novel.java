@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Novel {
-    @JsonSerialize(using = ToStringSerializer.class)
+
     private Long id;// 小说ID
     private String name;//小说名
     private String author;// 作者

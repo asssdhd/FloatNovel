@@ -4,13 +4,15 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.example.floatnovel.DTO.NovelDTO;
 import org.example.floatnovel.common.LoginUser;
-import org.example.floatnovel.entity.Bookshelf;
-import org.example.floatnovel.entity.Novel;
-import org.example.floatnovel.entity.Result;
+import org.example.floatnovel.entity.*;
 import org.example.floatnovel.mapper.BookshelfMapper;
 import org.example.floatnovel.mapper.NovelMapper;
+import org.example.floatnovel.mapper.NovelTagMapper;
+import org.example.floatnovel.mapper.TagMapper;
 import org.example.floatnovel.service.NovelService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -28,6 +30,11 @@ public class NovelServiceimpl extends ServiceImpl<NovelMapper, Novel> implements
 
     @Autowired
     private BookshelfMapper bookshelfMapper;
+
+    @Autowired
+    private NovelTagMapper novelTagMapper;
+
+
 
 
 
@@ -78,7 +85,7 @@ public class NovelServiceimpl extends ServiceImpl<NovelMapper, Novel> implements
     }
 
     /*
-    收藏小说
+    添加小说进书架
     2025.12.7
      */
     @Override
@@ -108,5 +115,44 @@ public class NovelServiceimpl extends ServiceImpl<NovelMapper, Novel> implements
         bookshelfMapper.insert(bookshelf);
 
 
+    }
+
+    /*
+     * 修改小说
+     * */
+    public Result set(NovelDTO novelDTO) {
+
+        //将小说修改更新到数据库
+        Novel novel = new Novel();
+        BeanUtils.copyProperties(novelDTO, novel);
+
+        //仅当小说的内容修改时才更新小说
+        if (novelDTO.getName() != null ||
+                novelDTO.getAuthor() != null ||
+                novelDTO.getIntro() != null ||
+                novelDTO.getCover() != null ||
+                novelDTO.getCategory() != null) {
+            novelMapper.updateById(novel);
+        }
+        //将小说标签的修改增加到数据库
+
+        // 2 删除旧标签
+        novelTagMapper.deleteByNovelId(novelDTO.getId());
+
+        // 3 插入新标签
+        if (novelDTO.getTagIds() != null && !novelDTO.getTagIds().isEmpty()) {
+
+            for (Long tagId : novelDTO.getTagIds()) {
+
+                NovelTag novelTag = new NovelTag();
+                novelTag.setNovelId(novelDTO.getId());
+                novelTag.setTagId(tagId);
+
+                novelTagMapper.insert(novelTag);
+            }
+        }
+
+
+        return Result.success();
     }
 }

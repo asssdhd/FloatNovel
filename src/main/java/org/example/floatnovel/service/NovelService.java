@@ -2,6 +2,7 @@ package org.example.floatnovel.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.example.floatnovel.DTO.NovelDTO;
 import org.example.floatnovel.entity.Novel;
 import org.example.floatnovel.entity.Result;
 
@@ -16,4 +17,6 @@ public interface NovelService extends IService<Novel> {
     Result<Novel> getById(Long id);
 
     void collect(Long novelId);
+
+    Result set(NovelDTO novelDTO);
 }

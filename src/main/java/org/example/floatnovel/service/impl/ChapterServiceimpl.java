@@ -75,10 +75,11 @@ public class ChapterServiceimpl extends ServiceImpl<ChapterMapper, Chapter> impl
     /*
     * 阅读小说
     * */
-    @Override
+
     public Result<ChapterDTO> read(Long chapterId) {
 
         ChapterDTO chapterDTO=chapterMapper.read(chapterId);
+
 
         return Result.success(chapterDTO);
     }

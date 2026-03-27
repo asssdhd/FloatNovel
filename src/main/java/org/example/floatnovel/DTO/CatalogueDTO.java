@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CatalogueDTO {
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long chapterID;
+    private Long chapterId;
     private String title;
     private Integer orders;
 }

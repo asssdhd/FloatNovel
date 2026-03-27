@@ -7,12 +7,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.example.floatnovel.DTO.CatalogueDTO;
 import org.example.floatnovel.DTO.ChapterDTO;
+import org.example.floatnovel.DTO.NovelDTO;
+import org.example.floatnovel.VO.ReadProgressVO;
 import org.example.floatnovel.entity.Apply;
 import org.example.floatnovel.entity.Novel;
+import org.example.floatnovel.entity.ReadProgress;
 import org.example.floatnovel.entity.Result;
-import org.example.floatnovel.service.ApplyService;
-import org.example.floatnovel.service.ChapterService;
-import org.example.floatnovel.service.NovelService;
+import org.example.floatnovel.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +33,12 @@ public class NovelController {
 
     @Autowired
     private ChapterService chapterService;
+
+    @Autowired
+    private TagService tagService;
+
+    @Autowired
+    private ReadProgressService  readProgressService;
 
 
 /*
@@ -79,7 +86,7 @@ public class NovelController {
 
 
     /*
-    收藏小说
+    添加小说进书架
     2025.12.7
      */
     @PostMapping("/collect")
@@ -118,7 +125,33 @@ public class NovelController {
     public Result<ChapterDTO> read(@RequestParam Long chapterId){
 
         return chapterService.read(chapterId);
+
     }
+
+    /*
+    * 保存阅读记录
+    * 2026-3-20*
+     */
+    @PostMapping("/progress")
+    @Operation(summary = "保存用户阅读记录")
+    public Result saveProgress(@RequestBody ReadProgress readProgress){
+        log.info("访问保存用户阅读记录接口成功：{}", readProgress);
+        return  readProgressService.saveProgress(readProgress);
+    }
+
+    /*
+    * 获取阅读记录
+    * 2026-3-20
+    * */
+    @GetMapping("/progress")
+    @Operation(summary = "获取用户阅读记录")
+    public Result<ReadProgressVO> getReadProgress( Long novelId){
+
+        return readProgressService.getProgress(novelId);
+
+    }
+
+    /*TODO 获取最近阅读的小说*/
 
 
 
@@ -133,10 +166,27 @@ public class NovelController {
     }
 
 
+    /*
+    * 添加标签
+    * */
+    @PostMapping("/tag")
+    @Operation(summary = "添加标签")
+    public Result addTag(@RequestBody org.example.floatnovel.entity.Tag tag){
+
+        return tagService.addTag(tag);
 
 
+    }
 
 
+    /*
+    * 修改小说
+    * */
+    @PostMapping("/setNovel")
+    @Operation(summary = "修改小说")
+    public Result set(@RequestBody NovelDTO novelDTO){
+        return novelService.set(novelDTO);
+    }
 
 
 

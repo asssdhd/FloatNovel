@@ -76,11 +76,15 @@ public class BookshelfServiceimpl extends ServiceImpl<BookshelfMapper, Bookshelf
         //查询到书架数据
         List<BookshelfVO> list= bookshelfMapper.getAll(userId);
 
-        //将查询到的数据进行序列化
-        String JsonList = JsonUtil.toJson(list);
 
 
-        stringRedisTemplate.opsForValue().set(key,JsonList);
+        //如果数据库存在记录
+          if(list!=null && !list.isEmpty()) {
+              //将查询到的数据进行序列化
+              String JsonList = JsonUtil.toJson(list);
+              //存入Redis
+              stringRedisTemplate.opsForValue().set(key, JsonList);
+          }
 
         return list;
     }

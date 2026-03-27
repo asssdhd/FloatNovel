@@ -38,13 +38,14 @@ public class BookshelfController {
     查看书架
     2025.12.13
      */
-    @GetMapping("/all")
+    @GetMapping
     @Operation(summary = "查看书架")
     public Result<List<BookshelfVO>> getAll(){
 
 
        List<BookshelfVO>  list= bookshelfService.getAll();
 
+       log.info("书架返回的数据:{}",list);
         return Result.success(list);
     }
 
