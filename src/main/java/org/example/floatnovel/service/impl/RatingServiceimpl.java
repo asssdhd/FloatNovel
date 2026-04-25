@@ -1,5 +1,6 @@
 package org.example.floatnovel.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.example.floatnovel.entity.Rating;
 import org.example.floatnovel.entity.Result;
@@ -22,7 +23,10 @@ public class RatingServiceimpl extends ServiceImpl<RatingMapper, Rating> impleme
     @Override
     public Result add(Rating rating) {
 
-        rating.setCreateTime(LocalDate.now());
+        long userId = StpUtil.getLoginIdAsLong();//从Sa-Token中获取用户ID
+
+        rating.setUserId(userId);//设置用户ID
+        rating.setCreateTime(LocalDate.now());//设置创建时间
 
         save(rating);
 

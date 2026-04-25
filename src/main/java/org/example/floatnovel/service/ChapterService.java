@@ -12,9 +12,11 @@ import java.util.List;
 public interface ChapterService {
 
 
-    Result upload(Long novelId, String title, MultipartFile file, Integer orders) throws IOException;
+    Result upload(Long novelId, String title, String content, Integer orders) throws IOException;
 
     Result<List<CatalogueDTO>> Catalogue(Long novelId);
 
-    Result<ChapterDTO> read(Long chapterId);
+    Result<ChapterDTO> read(Long chapterId,Long novelId);
+
+    Result deleteChapter(Long chapterId);
 }

@@ -6,13 +6,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.example.floatnovel.DTO.CatalogueDTO;
+import org.example.floatnovel.DTO.CategoryDTO;
 import org.example.floatnovel.DTO.ChapterDTO;
 import org.example.floatnovel.DTO.NovelDTO;
 import org.example.floatnovel.VO.ReadProgressVO;
-import org.example.floatnovel.entity.Apply;
-import org.example.floatnovel.entity.Novel;
-import org.example.floatnovel.entity.ReadProgress;
-import org.example.floatnovel.entity.Result;
+import org.example.floatnovel.entity.*;
 import org.example.floatnovel.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,11 +32,13 @@ public class NovelController {
     @Autowired
     private ChapterService chapterService;
 
-    @Autowired
-    private TagService tagService;
+
 
     @Autowired
     private ReadProgressService  readProgressService;
+
+    @Autowired
+    private CategoryService categoryService;
 
 
 /*
@@ -52,6 +52,17 @@ public class NovelController {
 
 
         return novelService.add(novel);
+
+    }
+
+    /*
+    * 获取小说分类
+    * 2026-4-11*/
+    @GetMapping("/category")
+    @Operation(summary = "获取小说分类")
+    public Result<List<CategoryDTO>> getCategory(){
+
+     return categoryService.getCategory();
 
     }
 
@@ -93,10 +104,11 @@ public class NovelController {
     @Operation(summary = "收藏小说接口")
     public Result collect(@RequestParam Long novelId){
 
-         novelService.collect(novelId);
 
-        return Result.success();
+
+        return  novelService.collect(novelId);
     }
+
 
 
     /*
@@ -122,9 +134,9 @@ public class NovelController {
      */
     @GetMapping("/read")
     @Operation(summary = "阅读小说接口")
-    public Result<ChapterDTO> read(@RequestParam Long chapterId){
+    public Result<ChapterDTO> read(@RequestParam Long chapterId,@RequestParam Long novelId){
 
-        return chapterService.read(chapterId);
+        return chapterService.read(chapterId,novelId);
 
     }
 
@@ -151,7 +163,14 @@ public class NovelController {
 
     }
 
-    /*TODO 获取最近阅读的小说*/
+   //获取最近阅读的小说
+    @GetMapping("/readrecent")
+    @Operation(summary = "获取最近的浏览记录")
+    public Result<List<Novel>> getNovelByCategoryId(){
+
+       return readProgressService.getNovelByCategoryId();
+
+    }
 
 
 
@@ -166,17 +185,7 @@ public class NovelController {
     }
 
 
-    /*
-    * 添加标签
-    * */
-    @PostMapping("/tag")
-    @Operation(summary = "添加标签")
-    public Result addTag(@RequestBody org.example.floatnovel.entity.Tag tag){
 
-        return tagService.addTag(tag);
-
-
-    }
 
 
     /*
@@ -189,5 +198,13 @@ public class NovelController {
     }
 
 
+
+    /*根据作者名查询小说*/
+    @GetMapping("/author/list")
+    @Operation(summary = "根据作者名查询小说")
+    public Result<List<Novel>> GetByAuthor(@RequestParam String author){
+
+     return novelService.getByAuthorName(author);
+    }
 
 }

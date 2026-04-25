@@ -7,9 +7,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.example.floatnovel.common.ApplyStatus;
 import org.example.floatnovel.common.LoginUser;
+import org.example.floatnovel.constant.UserConstant;
 import org.example.floatnovel.entity.Apply;
 import org.example.floatnovel.entity.Result;
+import org.example.floatnovel.entity.UserRole;
 import org.example.floatnovel.mapper.ApplyMapper;
+import org.example.floatnovel.mapper.UserMapper;
+import org.example.floatnovel.mapper.UserRoleMapper;
 import org.example.floatnovel.service.ApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,7 +29,17 @@ public class ApplyServiceimpl extends ServiceImpl<ApplyMapper, Apply> implements
     @Autowired
     private  ApplyMapper applyMapper;
 
+    @Autowired
+    private UserRoleMapper userRoleMapper;
+
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
+      /*
+   申请作者权限
+
+    */
     public Result apply(Apply apply) {
 
 
@@ -37,6 +51,9 @@ public class ApplyServiceimpl extends ServiceImpl<ApplyMapper, Apply> implements
 
         //添加进数据库
         save(apply);
+
+
+
 
 
         return Result.success();
@@ -51,7 +68,24 @@ public class ApplyServiceimpl extends ServiceImpl<ApplyMapper, Apply> implements
     @Override
     public Result audit(Apply apply) {
 
+        //更新审核结果
         applyMapper.audit(apply);
+
+        //获取审核结果
+        Integer status = apply.getStatus();
+
+        //如果审核结果通过
+        if (status == ApplyStatus.APPROVED.getCode()) {
+
+        //给用户分配作者权限
+        UserRole userRole = new UserRole();
+        userRole.setUserId(apply.getUserId());
+        userRole.setRoleId(UserConstant.ROLE_AUTHOR);
+
+        userRoleMapper.insert(userRole);
+    }
+        //2把笔名写进用户表里
+        userMapper.setUserNickName(apply);
 
         return Result.success();
     }

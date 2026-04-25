@@ -26,7 +26,7 @@ public class RatingController {
     /* 第三阶段
     添加评分
             2025.20.16*/
-    @PostMapping("/add")
+    @PostMapping()
     @Operation(summary = "添加评分接口")
     public Result add(@RequestBody Rating rating) {
 

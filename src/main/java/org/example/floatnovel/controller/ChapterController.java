@@ -10,10 +10,7 @@ import org.example.floatnovel.entity.Result;
 import org.example.floatnovel.mapper.NovelMapper;
 import org.example.floatnovel.service.ChapterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -40,24 +37,31 @@ public class ChapterController {
     上传章节
     需要作者权限
         2025.10.10*/
-    //TODO 权限管理
- @PostMapping("/upload")
+ @PostMapping()
  @Operation(summary = "上传章节接口")
-
  public Result  UplaodChapter(
 
          @RequestParam("novelId") Long novelId,
          @RequestParam("title") String title,
-         @RequestParam("chapter") MultipartFile file,
+         @RequestParam("chapter") String content,
          @RequestParam("orders") Integer orders
 
          ) throws IOException {
 
-     return chapterService.upload(novelId,title,file,orders);
+     return chapterService.upload(novelId,title,content,orders);
  }
 
+ /*
+ * 删除章节
+ * 2026.4.24
+ * */
+ @DeleteMapping
+ @Operation(summary = "删除章节")
+ public Result deleteChapter(Long chapterId){
 
+     return chapterService.deleteChapter(chapterId);
 
+ }
 
 
 }

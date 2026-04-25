@@ -3,13 +3,13 @@ package org.example.floatnovel.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.example.floatnovel.entity.Tag;
+import org.example.floatnovel.DTO.CategoryDTO;
 
 import java.util.List;
 
 @Mapper
-public interface TagMapper extends BaseMapper<Tag> {
+public interface CategoryMapper extends BaseMapper<CategoryDTO> {
 
-    @Select("SELECT  * FROM tag")
-    List<Tag> getAll();
+    @Select("select  id ,name from  category")
+    List<CategoryDTO> getCategoryList();
 }

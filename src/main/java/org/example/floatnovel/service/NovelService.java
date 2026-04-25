@@ -6,6 +6,8 @@ import org.example.floatnovel.DTO.NovelDTO;
 import org.example.floatnovel.entity.Novel;
 import org.example.floatnovel.entity.Result;
 
+import java.util.List;
+
 
 public interface NovelService extends IService<Novel> {
 
@@ -16,7 +18,11 @@ public interface NovelService extends IService<Novel> {
 
     Result<Novel> getById(Long id);
 
-    void collect(Long novelId);
+    Result collect(Long novelId);
 
     Result set(NovelDTO novelDTO);
+
+    Result<List<Novel>> getByAuthorName(String author);
+
+    List<Novel> getAll();
 }

@@ -5,20 +5,25 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.example.floatnovel.DTO.NovelDTO;
+import org.example.floatnovel.VO.BookshelfVO;
 import org.example.floatnovel.common.LoginUser;
+import org.example.floatnovel.common.constant.RedisConstant;
 import org.example.floatnovel.entity.*;
 import org.example.floatnovel.mapper.BookshelfMapper;
 import org.example.floatnovel.mapper.NovelMapper;
 import org.example.floatnovel.mapper.NovelTagMapper;
 import org.example.floatnovel.mapper.TagMapper;
 import org.example.floatnovel.service.NovelService;
+import org.example.floatnovel.utility.JsonUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Service
@@ -33,6 +38,10 @@ public class NovelServiceimpl extends ServiceImpl<NovelMapper, Novel> implements
 
     @Autowired
     private NovelTagMapper novelTagMapper;
+
+
+    @Autowired
+    private StringRedisTemplate  stringRedisTemplate;
 
 
 
@@ -89,14 +98,24 @@ public class NovelServiceimpl extends ServiceImpl<NovelMapper, Novel> implements
     2025.12.7
      */
     @Override
-    public void collect(Long novelId) {
+    public Result collect(Long novelId) {
         //1.获取用户的ID
          //1.1从security中获取loginUser对象
         Long userId = StpUtil.getLoginIdAsLong();
 
+        String key= RedisConstant.BOOKSHELF_KEY+userId;//拼装key
 
+        //恢复记录
+       int update=bookshelfMapper.recover(userId,novelId);
 
+       //若恢复成功直接返回
+       if(update>0){
+           //删除redis中的数据
 
+           stringRedisTemplate.delete(key);
+
+           return Result.success();
+       }
         //查询小说名和封面
         Novel novel = novelMapper.selectById(novelId);
 
@@ -112,8 +131,13 @@ public class NovelServiceimpl extends ServiceImpl<NovelMapper, Novel> implements
         bookshelf.setUpdateTime(LocalDateTime.now());//设置修改时间
         bookshelf.setIsDeleted(false);//将状态设置为正常，true未已删除
 
+        //先持久化到数据库
         bookshelfMapper.insert(bookshelf);
 
+        //再删除redis
+        stringRedisTemplate.delete(key);
+
+        return Result.success();
 
     }
 
@@ -154,5 +178,24 @@ public class NovelServiceimpl extends ServiceImpl<NovelMapper, Novel> implements
 
 
         return Result.success();
+    }
+
+    /*
+    * 根据作者名获取小说
+    * */
+    public Result<List<Novel>> getByAuthorName(String author) {
+
+        List<Novel> novelList=novelMapper.selectByAuthorName(author);
+
+        return Result.success(novelList);
+    }
+
+    /*
+    * 获取全部标签
+    * */
+    @Override
+    public List<Novel> getAll() {
+
+        return novelMapper.getAll();
     }
 }

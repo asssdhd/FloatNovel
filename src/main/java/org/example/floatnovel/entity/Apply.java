@@ -16,6 +16,8 @@ public class Apply {
 
     private Long id;
     private Long userId;//申请用户ID
+    private String authorName;//作者名
+    private String contactInfo;//联系方式
     private String applyReason;//申请理由
     private Integer status;//申请状态
     private String auditReason;//审核意见

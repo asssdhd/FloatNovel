@@ -9,6 +9,8 @@ import org.example.floatnovel.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/comment")
 @Tag(name = "评论模块")
@@ -43,5 +45,14 @@ public class CommentController {
 
         return Result.success(page);
     }
+
+    /*获取小说相关评论*/
+    @GetMapping("/{novelId}")
+    @Operation(summary = "获取小说评论接口")
+    public Result<List<Comment>> get(@PathVariable("novelId") Long novelId){
+
+        return commentService.getByNovelId(novelId);
+    }
+
 
 }

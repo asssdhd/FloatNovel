@@ -8,6 +8,7 @@ import org.example.floatnovel.entity.ChapterContent;
 import org.example.floatnovel.entity.Result;
 import org.example.floatnovel.mapper.ChapterContentMapper;
 import org.example.floatnovel.mapper.ChapterMapper;
+import org.example.floatnovel.mapper.NovelMapper;
 import org.example.floatnovel.service.ChapterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,12 +30,17 @@ public class ChapterServiceimpl extends ServiceImpl<ChapterMapper, Chapter> impl
 
     @Autowired
     private ChapterContentMapper chapterContentMapper;
+
+    @Autowired
+    private NovelMapper novelMapper;
+
+
     /*
     章节上传
     2025.12.29
      */
     @Transactional
-    public Result upload(Long novelId, String title, MultipartFile file, Integer orders) throws IOException {
+    public Result upload(Long novelId, String title, String content, Integer orders) throws IOException {
 
         //上传章节
         Chapter chapter = new Chapter();
@@ -51,7 +57,7 @@ public class ChapterServiceimpl extends ServiceImpl<ChapterMapper, Chapter> impl
         //上传章节内容
         ChapterContent chapterContent = new ChapterContent();
         chapterContent.setChapter_id(chapter.getId());
-        chapterContent.setContent(new String(file.getBytes(), StandardCharsets.UTF_8));
+        chapterContent.setContent(content);
 
         
         chapterContentMapper.insert(chapterContent);
@@ -61,6 +67,7 @@ public class ChapterServiceimpl extends ServiceImpl<ChapterMapper, Chapter> impl
         //返回结果
         return Result.success();
     }
+
     /*
         获取小说目录
         2025.12.30
@@ -76,11 +83,26 @@ public class ChapterServiceimpl extends ServiceImpl<ChapterMapper, Chapter> impl
     * 阅读小说
     * */
 
-    public Result<ChapterDTO> read(Long chapterId) {
+    public Result<ChapterDTO> read(Long chapterId,Long novelId) {
+
 
         ChapterDTO chapterDTO=chapterMapper.read(chapterId);
 
+       novelMapper.UpdateViewCountOne(novelId);
 
         return Result.success(chapterDTO);
+    }
+    /*
+    * 删除章节
+    * */
+    @Transactional//一致性注解
+    public Result deleteChapter(Long chapterId) {
+        //删除章节表的记录
+         chapterMapper.deleteById(chapterId);
+
+        //删除章节内容表的记录
+        chapterContentMapper.deleteByChapterId(chapterId);
+
+        return Result.success();
     }
 }

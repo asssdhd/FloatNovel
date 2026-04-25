@@ -27,4 +27,7 @@ public interface BookshelfMapper extends BaseMapper<Bookshelf> {
 
     @Select("select novel_id,novel_name,cover from bookshelf where user_id=#{userId} and is_deleted = 0")
     List<BookshelfVO> getAll(Long userId);
+
+    @Update("update bookshelf set is_deleted = 0 where user_id = #{userId} and novel_id=#{novelId}")
+    int recover(Long userId, Long novelId);
 }

@@ -40,10 +40,12 @@ public class BookshelfServiceimpl extends ServiceImpl<BookshelfMapper, Bookshelf
         Long userId = StpUtil.getLoginIdAsLong();
           //1.2设置key
          String key= RedisConstant.BOOKSHELF_KEY+userId;
-         //1.3删除缓存
-         stringRedisTemplate.delete(key);
-       //删除数据库中的数据
+
+       //先删除数据库中的数据
        bookshelfMapper.deleteBYids(ids);
+
+        //后删除缓存
+        stringRedisTemplate.delete(key);
 
        return Result.success();
 
