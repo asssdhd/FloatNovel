@@ -1,6 +1,7 @@
 package org.example.floatnovel.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.example.floatnovel.DTO.CatalogueDTO;
 import org.example.floatnovel.DTO.ChapterDTO;
 import org.example.floatnovel.entity.Chapter;
@@ -10,18 +11,16 @@ import org.example.floatnovel.mapper.ChapterContentMapper;
 import org.example.floatnovel.mapper.ChapterMapper;
 import org.example.floatnovel.mapper.NovelMapper;
 import org.example.floatnovel.service.ChapterService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ChapterServiceimpl extends ServiceImpl<ChapterMapper, Chapter> implements ChapterService {
 
@@ -79,19 +78,17 @@ public class ChapterServiceimpl extends ServiceImpl<ChapterMapper, Chapter> impl
         return Result.success(catalogue);
     }
 
-    /*
-    * 阅读小说
-    * */
+    @Override
+    public Result<ChapterDTO> read(Long chapterId, Long novelId) {
 
-    public Result<ChapterDTO> read(Long chapterId,Long novelId) {
+        ChapterDTO chapterDTO = chapterMapper.read(chapterId);
 
-
-        ChapterDTO chapterDTO=chapterMapper.read(chapterId);
-
-       novelMapper.UpdateViewCountOne(novelId);
+        novelMapper.UpdateViewCountOne(novelId);
 
         return Result.success(chapterDTO);
     }
+
+
     /*
     * 删除章节
     * */
@@ -104,5 +101,28 @@ public class ChapterServiceimpl extends ServiceImpl<ChapterMapper, Chapter> impl
         chapterContentMapper.deleteByChapterId(chapterId);
 
         return Result.success();
+    }
+
+    @Override
+    public Result updateChapter(ChapterDTO chapterDTO) {
+
+        Chapter chapter = new Chapter();
+
+        BeanUtils.copyProperties(chapterDTO,chapter);
+
+        chapterMapper.updateById(chapter);
+
+        ChapterContent chapterContent = new ChapterContent(chapter.getId(), chapterDTO.getContent());
+
+        chapterContentMapper.insert(chapterContent);
+
+        return Result.success();
+    }
+
+    @Override
+    public Result<ChapterDTO> getChapterInfo(Long novelId, Long chapterId) {
+        ChapterDTO chapterDTO = chapterMapper.read(chapterId);
+
+        return Result.success(chapterDTO);
     }
 }

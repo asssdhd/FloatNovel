@@ -30,4 +30,28 @@ public class CategoryServiceimpl extends ServiceImpl<CategoryMapper, CategoryDTO
 
         return Result.success(list);
     }
+
+    @Override
+    public Result addCategoryToNovel(Long novelId, Long categoryId) {
+
+        categoryMapper.addCategoryToNovel(novelId,categoryId);
+
+        return Result.success();
+    }
+
+    @Override
+    public Result deleteCategory(Long categoryId) {
+
+        categoryMapper.deleteById(categoryId);
+
+        return Result.success();
+    }
+
+    @Override
+    public Result updateCategory(CategoryDTO categoryDTO) {
+
+        categoryMapper.updateById(categoryDTO);
+
+        return Result.success();
+    }
 }

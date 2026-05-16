@@ -12,4 +12,6 @@ public interface CommentService {
     Page<Comment> list(Integer pageNum, Integer pageSize);
 
     Result<List<Comment>> getByNovelId(Long novelId);
+
+    Result<List<Comment>> MyComment();
 }

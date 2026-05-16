@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.floatnovel.entity.Comment;
 import org.example.floatnovel.entity.Result;
 import org.example.floatnovel.service.CommentService;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,6 +54,24 @@ public class CommentController {
 
         return commentService.getByNovelId(novelId);
     }
+
+    /*TODO
+    *  删除评论*/
+
+
+
+    /*
+    * 我的评论
+    * */
+    @GetMapping()
+    @Operation(summary = "我的评论")
+    public Result<List<Comment>> getByNovelId(){
+        return commentService.MyComment();
+    }
+
+
+
+
 
 
 }

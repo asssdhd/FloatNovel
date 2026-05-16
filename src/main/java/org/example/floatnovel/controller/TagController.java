@@ -13,6 +13,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/tag")
+@io.swagger.v3.oas.annotations.tags.Tag(name = "标签管理")
 public class TagController {
 
     @Autowired
@@ -47,5 +48,22 @@ public class TagController {
     @Operation(summary = "查看标签列表")
     private Result<List<Tag>> getTags(){
         return tagService.getAll();
+    }
+
+    /*
+    * 给小说添加标签
+    * */
+    @PostMapping("/novel")
+    @Operation(summary = "给小说添加标签")
+    public Result addTagFromNovel(@RequestParam Long NovelId,@RequestParam Long tagId){
+
+        return tagService.addTagToNovel(NovelId,tagId);
+    }
+    @DeleteMapping("/novel")
+    @Operation(summary = "给小说删除标签")
+    public Result deleteNovelTag(@RequestParam Long NovelId, @RequestParam Long tagId){
+
+        return tagService.deleteTagToNovel(NovelId,tagId);
+
     }
 }

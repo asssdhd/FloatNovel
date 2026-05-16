@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
+import org.example.floatnovel.DTO.ChapterDTO;
 import org.example.floatnovel.entity.Chapter;
 import org.example.floatnovel.entity.Result;
 import org.example.floatnovel.mapper.NovelMapper;
@@ -62,6 +63,25 @@ public class ChapterController {
      return chapterService.deleteChapter(chapterId);
 
  }
+
+ /* TODO
+ 修改章节
+ * */
+    @PutMapping
+    @Operation(summary = "修改章节")
+    public Result updateChapter(@RequestBody ChapterDTO chapterDTO){
+        return chapterService.updateChapter(chapterDTO);
+    }
+
+
+   /*
+   * 获取章节详情接口
+   * */
+    @GetMapping
+    @Operation(summary = "获取章节详情")
+    public Result<ChapterDTO> getChapter(@RequestParam Long novelId, @RequestParam Long chapterId){
+        return chapterService.getChapterInfo(novelId,chapterId);
+    }
 
 
 }

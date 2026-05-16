@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.floatnovel.DTO.DeleteBookDTO;
 import org.example.floatnovel.VO.BookshelfVO;
 import org.example.floatnovel.entity.Bookshelf;
+import org.example.floatnovel.entity.Novel;
 import org.example.floatnovel.entity.Result;
 import org.example.floatnovel.service.BookshelfService;
+import org.example.floatnovel.service.ReadProgressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,9 @@ public class BookshelfController {
 
     @Autowired
     private BookshelfService bookshelfService;
+
+    @Autowired
+    private ReadProgressService readProgressService;
 
     /*
     删除书架上的小说
@@ -47,6 +52,15 @@ public class BookshelfController {
 
        log.info("书架返回的数据:{}",list);
         return Result.success(list);
+    }
+
+    //获取最近阅读的小说
+    @GetMapping("/readrecent")
+    @Operation(summary = "获取最近的浏览记录")
+    public Result<List<Novel>> getNovelByCategoryId(){
+
+        return readProgressService.getNovelByCategoryId();
+
     }
 
 

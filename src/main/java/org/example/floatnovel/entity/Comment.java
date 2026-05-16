@@ -17,7 +17,7 @@ public class Comment {
 
     private Long rootId;
 
-    private Long parent_id;
+    private Long parentId;
 
     private String content;
 

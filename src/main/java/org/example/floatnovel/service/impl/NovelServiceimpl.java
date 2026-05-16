@@ -5,16 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.example.floatnovel.DTO.NovelDTO;
-import org.example.floatnovel.VO.BookshelfVO;
-import org.example.floatnovel.common.LoginUser;
+import org.example.floatnovel.VO.NovelVO;
 import org.example.floatnovel.common.constant.RedisConstant;
 import org.example.floatnovel.entity.*;
 import org.example.floatnovel.mapper.BookshelfMapper;
 import org.example.floatnovel.mapper.NovelMapper;
 import org.example.floatnovel.mapper.NovelTagMapper;
-import org.example.floatnovel.mapper.TagMapper;
 import org.example.floatnovel.service.NovelService;
-import org.example.floatnovel.utility.JsonUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -82,14 +79,25 @@ public class NovelServiceimpl extends ServiceImpl<NovelMapper, Novel> implements
 
 
      /* 第二阶段
-    获取小说详情
+    获取小说详情TODO 返回标签
             2025.10.15*/
     @Override
-    public Result<Novel> getById(Long id) {
+    public Result<NovelVO> getById(Long id) {
 
         Novel novel = novelMapper.selectById(id);
 
-        return  Result.success(novel);
+        NovelVO novelVO = new NovelVO();
+
+        BeanUtils.copyProperties(novel, novelVO);
+
+        //查询小说标签
+        List<Tag> tags=novelTagMapper.getTagByNovelId(id);
+
+
+        novelVO.setTags(tags);
+
+
+        return  Result.success(novelVO);
 
     }
 
